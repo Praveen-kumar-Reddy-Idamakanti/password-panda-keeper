@@ -5,6 +5,9 @@ import { LogOut, KeyRound, Plus, Search } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { AddCredentialDialog } from "./add-credential-dialog";
 import { Input } from "@/components/ui/input";
+import { Credential } from "@/lib/types";
+import { addCredential } from "@/lib/storage";
+import { toast } from "sonner";
 
 interface HeaderProps {
   searchQuery?: string;
@@ -22,6 +25,11 @@ export function Header({ searchQuery, onSearchChange, onAddNew }: HeaderProps = 
     } else {
       setIsAddDialogOpen(true);
     }
+  };
+  
+  const handleSaveCredential = (credential: Omit<Credential, "id" | "createdAt" | "updatedAt">) => {
+    addCredential(credential);
+    toast.success("New credential added");
   };
 
   return (
@@ -66,7 +74,8 @@ export function Header({ searchQuery, onSearchChange, onAddNew }: HeaderProps = 
               {!onAddNew && (
                 <AddCredentialDialog 
                   open={isAddDialogOpen} 
-                  onOpenChange={setIsAddDialogOpen} 
+                  onOpenChange={setIsAddDialogOpen}
+                  onSave={handleSaveCredential}
                 />
               )}
             </>
