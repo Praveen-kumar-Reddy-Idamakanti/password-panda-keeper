@@ -16,3 +16,13 @@ export interface Category {
   icon?: string;
   color?: string;
 }
+
+export interface User {
+  id: string;
+  email: string;
+  mfaCompleted: {
+    password: boolean;
+    biometrics: boolean;
+    googleAuth: boolean;
+  };
+}

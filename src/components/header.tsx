@@ -1,41 +1,46 @@
 
-import { Search, Lock, Plus } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { LogOut, KeyRound, Plus } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
+import AddCredentialDialog from "./add-credential-dialog";
 
-interface HeaderProps {
-  searchQuery: string;
-  onSearchChange: (query: string) => void;
-  onAddNew: () => void;
-}
+export function Header() {
+  const { logout, user } = useAuth();
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
 
-export function Header({ searchQuery, onSearchChange, onAddNew }: HeaderProps) {
   return (
-    <header className="sticky top-0 z-10 w-full backdrop-blur-lg bg-background/90 border-b">
-      <div className="container mx-auto px-4 py-3 flex flex-col sm:flex-row gap-3 sm:items-center justify-between">
+    <header className="border-b bg-card">
+      <div className="container flex h-16 items-center justify-between px-4">
         <div className="flex items-center gap-2">
-          <div className="relative h-9 w-9 rounded-full bg-primary flex items-center justify-center pulse-ring">
-            <Lock className="h-5 w-5 text-primary-foreground" />
-          </div>
-          <h1 className="text-xl font-bold">Password Panda</h1>
+          <KeyRound className="h-6 w-6" />
+          <h1 className="text-xl font-bold md:text-2xl">Password Vault</h1>
         </div>
-        
-        <div className="flex flex-1 items-center sm:max-w-md space-x-2">
-          <div className="relative flex-1">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-              type="search"
-              placeholder="Search credentials..."
-              className="pl-9 w-full"
-              value={searchQuery}
-              onChange={(e) => onSearchChange(e.target.value)}
-            />
-          </div>
-          
-          <Button onClick={onAddNew}>
-            <Plus className="h-4 w-4 mr-2" />
-            Add New
-          </Button>
+        <div className="flex items-center gap-2">
+          {user && (
+            <>
+              <Button
+                variant="outline"
+                className="gap-2"
+                onClick={() => setIsAddDialogOpen(true)}
+              >
+                <Plus className="h-4 w-4" />
+                <span className="hidden md:inline">Add Credential</span>
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-muted-foreground hover:text-foreground"
+                onClick={logout}
+              >
+                <LogOut className="h-5 w-5" />
+              </Button>
+              <AddCredentialDialog 
+                open={isAddDialogOpen} 
+                onOpenChange={setIsAddDialogOpen} 
+              />
+            </>
+          )}
         </div>
       </div>
     </header>
